@@ -6,7 +6,7 @@ gambit v.1.0
 
 * Prolog implementation of the lambda calculi
 * Transform potential energy(functional programming) into kinetic energy(logical programming).
-* "I'm the leader of the geek patrol. That makes me king geek."
+* *"I'm the leader of the geek patrol. That makes me king geek."*
 
 ## **Devs** ##
 
