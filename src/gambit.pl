@@ -19,16 +19,16 @@
     % Aplica substitución de argumentos
     % Reducción beta(forma normal)
     reduce(comb(lamb(X,Body),Arg),R) :- 
-                                        write('Rator = '),print(lamb(X,Body)),nl,
-                                        write('Rand = '),print(Arg),nl,nl,
+                                        write('Operador = '),print(lamb(X,Body)),nl,
+                                        write('Operado = '),print(Arg),nl,nl,
                                         subst(Body,X,Arg,R).
 
     % Reducir una expresión de una función predefinida(reducción )
     reduce(comb(con(C),con(Arg)),R) :- compute(C,Arg,R). 
 
-    % Reducir expresiones lambda tipo opeRAND y opeRATOR
-    reduce(comb(Rator,Rand),comb(NewRator,Rand)) :- reduce(Rator,NewRator).
-    reduce(comb(Rator,Rand),comb(Rator,NewRand)) :- reduce(Rand,NewRand).
+    % Reducir expresiones lambda tipo Operador y Operando (abstracciones y aplicaciones)
+    reduce(comb(Operador,Operando),comb(NuevoOperador,Operando)) :- reduce(Operador,NuevoOperador).
+    reduce(comb(Operador,Operando),comb(Operador,NuevoOperando)) :- reduce(Operando,NuevoOperando).
 
     % Reducir el cuerpo de una expresión lambda
     reduce(lamb(X,Body),lamb(X,NewBody)) :- reduce(Body,NewBody).
@@ -44,9 +44,9 @@
     % Una constante cualquiera
     subst(con(C),V,E1,con(C)).
     %  Un operando asociado a un operador
-    subst(comb(Rator,Rand),V,E1,comb(NewRator,NewRand)) :- 
-                                             subst(Rator,V,E1,NewRator),
-                                             subst(Rand,V,E1,NewRand).
+    subst(comb(Operador,Operando),V,E1,comb(NuevoOperador,NuevoOperando)) :- 
+                                             subst(Operador,V,E1,NuevoOperador),
+                                             subst(Operando,V,E1,NuevoOperando).
     % Una expresión lambda de una variable asociada
     subst(lamb(V,E),V,E1,lamb(V,E)).
     % Una expresión lambda de una variable libre
@@ -67,8 +67,8 @@
     % Una constante libre C cualquiera > nula
     freevars(con(C),[]).
     % VL de una aplicación(Operando y Operador)
-    freevars(comb(Rator,Rand),FV) :- freevars(Rator,RatorFV),freevars(Rand,RandFV),
-                                     union(RatorFV,RandFV,FV).
+    freevars(comb(Operador,Operando),FV) :- freevars(Operador,OperadorFV),freevars(Operando,OperandoFV),
+                                     union(OperadorFV,OperandoFV,FV).
     % Una variable de una expresión lambda
     freevars(lamb(X,E),FV) :-        freevars(E,F),delete(X,F,FV).
 
@@ -131,12 +131,12 @@
 %%%%%%%%%%%%%%%
     print(var(X)) :- write(X).      print(con(C)) :- write(C).
     print(lamb(X,E)) :- write('(L '),write(X),tab(1),print(E),write(')').
-    print(comb(Rator,Rand)) :- write('('),print(Rator),tab(1),print(Rand),write(')').
+    print(comb(Operador,Operando)) :- write('('),print(Operador),tab(1),print(Operando),write(')').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % H I L O - P R I N C I P A L %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    go :- 
+    run :- 
         nl,write('Calculo λ'),nl,nl,
         write('Nombre de archivo:  '), nl, getfilename(FileName),nl,
         see(FileName), scan(Tokens), nl, write('Scan: [OK]'), nl, !,
